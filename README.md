@@ -293,6 +293,79 @@ El buffer redujo los faltantes, pero aumentó el excedente de capacidad. La cobe
 
 Estas cantidades representan diferencias entre demanda y capacidad propuesta. Para convertirlas en personal, camas o turnos se requieren datos operativos adicionales.
 
+## Cómo adaptar el proyecto a otro hospital
+
+La metodología puede utilizarse con datos de otro hospital: preparar la demanda semanal, comparar pronósticos y evaluar un margen adicional de capacidad.
+
+Es necesario volver a seleccionar el modelo y calcular el buffer con datos locales. Holt-Winters y el buffer de 1,234.82 atenciones corresponden al conjunto de datos analizado y no deben copiarse directamente a otro hospital.
+
+### 1. Datos necesarios para comenzar
+
+Para adaptar el pronóstico se necesita una tabla con:
+
+| Dato | Utilidad |
+|---|---|
+| Fecha de cierre de la semana | Ordenar los datos y separar los periodos de evaluación. |
+| Número de atenciones por semana | Construir y evaluar los pronósticos. |
+| Identificador del hospital, si se incluyen varios | Analizar la demanda de cada centro. |
+| Definición de las atenciones incluidas | Mantener un criterio consistente, por ejemplo, urgencias no programadas. |
+
+Antes de modelar, se deben revisar duplicados, semanas ausentes y cambios en el registro. Una semana sin datos no debe interpretarse automáticamente como cero atenciones.
+
+La configuración actual de Holt-Winters utiliza ciclos de 52 semanas y requiere al menos dos ciclos completos para inicializarse, además de datos posteriores para validación y prueba. Si el historial es limitado, se deben adaptar los periodos de evaluación y considerar métodos más simples.
+
+### 2. Pasos para replicar el análisis
+
+1. Obtener los registros del hospital y agrupar las atenciones por semana.
+2. Adaptar la ruta del CSV, los nombres de las columnas y los filtros del notebook.
+3. Construir `demanda_semanal`, con las fechas como índice y una columna llamada `Atenciones`.
+4. Revisar la demanda, las semanas atípicas y los posibles patrones estacionales.
+5. Separar entrenamiento, validación y prueba en orden cronológico.
+6. Comparar los modelos con los datos locales y seleccionar uno utilizando el criterio de evaluación definido.
+7. Calcular el buffer únicamente con los errores de validación.
+8. Evaluar el pronóstico y el buffer en prueba, midiendo errores, cobertura, faltantes y sobrantes.
+9. Incorporar nuevas observaciones y revisar periódicamente si el desempeño se mantiene.
+
+En este proyecto se reservaron 52 semanas para validación y 52 para prueba. Esa división debe revisarse según la cantidad de datos disponibles en cada hospital.
+
+Los pronósticos se realizan una semana adelante. Primero se estima la demanda y después se incorpora el resultado real. Para anticipar varias semanas sin conocer los resultados intermedios, se necesita una evaluación diferente.
+
+### 3. Datos para convertir la demanda en recursos
+
+El pronóstico estima atenciones semanales. Para traducirlo en personal, camas o turnos se necesitan datos operativos adicionales:
+
+| Datos adicionales | Para qué sirven |
+|---|---|
+| Llegadas por día y hora | Identificar los turnos con mayor demanda. |
+| Gravedad de los casos según el triaje | Distinguir diferentes necesidades de atención. |
+| Tiempo de trabajo de médicos y enfermería por tipo de caso | Estimar las horas de personal necesarias. |
+| Tiempo de ocupación de camas o espacios de urgencias | Estimar cuántos espacios se requieren simultáneamente. |
+| Personal y espacios disponibles por turno | Comparar los recursos necesarios con los disponibles. |
+| Pacientes que requieren hospitalización y su tiempo de espera | Evaluar la ocupación mientras esperan una cama hospitalaria. |
+| Costos de personal, horas extra y capacidad adicional | Comparar el costo de diferentes escenarios. |
+
+Por ejemplo, 1,000 atenciones adicionales por semana no equivalen a 1,000 camas. La necesidad de camas depende de cuántos pacientes coinciden y cuánto tiempo permanecen.
+
+### 4. Mejoras para una siguiente versión
+
+| Mejora | Motivo |
+|---|---|
+| Evaluar varias ventanas temporales | Comprobar si los resultados se mantienen en diferentes periodos. |
+| Analizar cada hospital por separado | Detectar patrones locales ocultos en los datos agregados. |
+| Comparar distintos niveles de buffer en validación | Medir el intercambio entre reducir faltantes y aumentar capacidad sobrante. |
+| Incorporar costos y una meta de cobertura | Elegir un margen acorde con las necesidades y recursos del hospital. |
+| Evaluar demanda diaria o por turno | Apoyar decisiones más específicas de programación de personal. |
+| Explorar variables de calendario disponibles al pronosticar | Comprobar si mejoran la precisión frente a los métodos actuales. |
+| Registrar versiones de Python y de las librerías | Facilitar la reproducción de los resultados. |
+
+### 5. Alcance y limitaciones
+
+El buffer alcanzó una cobertura de 86.54% en prueba, por debajo del 95% planteado. Se necesita evaluar su estabilidad en más periodos antes de utilizarlo para decisiones operativas.
+
+Los faltantes y sobrantes representan diferencias entre demanda y capacidad propuesta. No son mediciones de pacientes sin atención ni de recursos realmente ociosos.
+
+La aplicación en otro hospital requiere validación con sus propios datos y comparación con su capacidad real.
+
 ## Conclusiones
 
 El pronóstico semanal permite anticipar la demanda y evaluar escenarios de capacidad. Holt-Winters presentó el menor MAD en validación, aunque su ventaja frente al suavizamiento exponencial simple fue pequeña.
