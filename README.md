@@ -293,6 +293,37 @@ El buffer redujo los faltantes, pero aumentó el excedente de capacidad. La cobe
 
 Estas cantidades representan diferencias entre demanda y capacidad propuesta. Para convertirlas en personal, camas o turnos se requieren datos operativos adicionales.
 
+## Valor para el hospital y sus pacientes
+
+Este análisis permite anticipar la demanda semanal y evaluar cuánta capacidad adicional considerar. Su utilidad consiste en apoyar la planificación de recursos antes de que aumenten las atenciones.
+
+### Beneficios potenciales
+
+| Área | Qué podría mejorar | Cómo comprobarlo |
+|---|---|---|
+| Operación | Preparación de personal y espacios para periodos de mayor demanda. | Comparar saturación y tiempos de espera antes y después de implementar la propuesta. |
+| Finanzas | Menor necesidad de horas extra imprevistas y mejor uso del presupuesto. | Comparar los costos de la planificación actual con los de la propuesta. |
+| Experiencia del paciente | Una atención más organizada, si el pronóstico se traduce en recursos adecuados. | Medir tiempos de espera, satisfacción y quejas. |
+| Reputación | Mayor confianza en el hospital si mejora la experiencia de atención de forma sostenida. | Evaluar satisfacción, recomendaciones y percepción del servicio. |
+
+### Ejemplo de aplicación en Suiza
+
+En Suiza, la Oficina Federal de Salud Pública publica datos operativos e indicadores de calidad hospitalaria. En este contexto, adaptar el análisis podría apoyar una gestión basada en evidencia y complementar la evaluación del servicio.
+
+Un hospital suizo podría utilizar sus registros de urgencias para comparar modelos, calcular un buffer local y evaluar si la planificación propuesta mejora la disponibilidad de recursos. Después debería medir su efecto sobre costos, tiempos de espera y experiencia del paciente.
+
+Este es un ejemplo de adaptación. El proyecto actual utiliza datos de Escocia y no ha sido validado en un hospital suizo.
+
+Fuente: [Oficina Federal de Salud Pública de Suiza: datos de hospitales](https://www.bag.admin.ch/en/facts-figures-on-hospitals).
+
+### Qué demuestra este proyecto
+
+En el escenario de prueba, el buffer redujo las semanas con faltantes de 25 a 7, pero aumentó la capacidad sobrante.
+
+Esto demuestra un intercambio entre cubrir más demanda y reservar más capacidad. Todavía no se han demostrado ahorros, ingresos adicionales, menores tiempos de espera ni mejoras de reputación.
+
+Para evaluar esos beneficios se necesitan datos operativos y económicos del hospital, además de una comparación con su planificación actual.
+
 ## Cómo adaptar el proyecto a otro hospital
 
 La metodología puede utilizarse con datos de otro hospital: preparar la demanda semanal, comparar pronósticos y evaluar un margen adicional de capacidad.
