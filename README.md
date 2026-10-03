@@ -253,6 +253,68 @@ Los cambios extraordinarios y las modificaciones en el registro de datos pueden 
 
 ## Estado del proyecto
 
-En desarrollo. La base de datos fue seleccionada y revisada inicialmente.
+Proyecto completado: preparación de datos, análisis exploratorio, comparación de pronósticos y evaluación de un buffer de capacidad.
 
-Los modelos, métricas, gráficas y conclusiones se incorporarán conforme avance el análisis. Aún no se ha determinado qué modelo presenta el mejor desempeño.
+## Resultados del pronóstico
+
+La serie contiene 605 semanas. Se utilizaron 501 para entrenamiento, 52 para validación y 52 para prueba, respetando el orden temporal.
+
+Se compararon Naive, Naive estacional, promedio móvil de cuatro semanas, suavizamiento exponencial simple, Holt y Holt-Winters.
+
+Holt-Winters obtuvo el menor MAD en validación: 628.23 atenciones semanales. Su ventaja frente al suavizamiento exponencial simple fue pequeña, aproximadamente 0.85%.
+
+En prueba, Holt-Winters obtuvo:
+
+| Métrica | Resultado |
+|---|---:|
+| MD | 23.07 |
+| MAD | 761.22 |
+| MAPE | 2.88% |
+| RMSE | 1,011.94 |
+
+Cada pronóstico semanal se calculó usando únicamente información disponible de semanas anteriores.
+
+## Buffer de capacidad
+
+Se calculó un buffer de 1,234.82 atenciones semanales usando el percentil 95 de los errores de validación, definidos como demanda real menos pronóstico.
+
+La capacidad propuesta se calculó como:
+
+Capacidad = pronóstico + buffer
+
+| Indicador en prueba | Sin buffer | Con buffer |
+|---|---:|---:|
+| Semanas con capacidad suficiente | 51.92% | 86.54% |
+| Semanas con faltante | 25 | 7 |
+| Faltante acumulado | 20,391.45 | 3,819.74 |
+| Excedente acumulado | 19,191.80 | 66,830.58 |
+
+El buffer redujo los faltantes, pero aumentó el excedente de capacidad. La cobertura observada fue de 86.54%; el percentil 95 de validación no garantiza una cobertura de 95% en prueba.
+
+Estas cantidades representan diferencias entre demanda y capacidad propuesta. Para convertirlas en personal, camas o turnos se requieren datos operativos adicionales.
+
+## Conclusiones
+
+El pronóstico semanal permite anticipar la demanda y evaluar escenarios de capacidad. Holt-Winters presentó el menor MAD en validación, aunque su ventaja frente al suavizamiento exponencial simple fue pequeña.
+
+Agregar un buffer redujo las semanas con faltante de 25 a 7 durante la prueba, a cambio de un mayor excedente de capacidad.
+
+Los resultados corresponden a datos agregados de Escocia y no deben trasladarse directamente a un hospital mexicano sin una validación local.
+
+### Instalar las librerías necesarias
+
+Antes de ejecutar el notebook por primera vez, abre la terminal de VS Code y ejecuta:
+
+```bash
+pip install pandas numpy matplotlib statsmodels ipykernel
+```
+
+Este comando instala las herramientas que utiliza el proyecto:
+
+- **pandas:** leer el CSV y organizar los datos.
+- **numpy:** realizar cálculos numéricos.
+- **matplotlib:** crear las gráficas.
+- **statsmodels:** calcular los pronósticos de suavizamiento exponencial, Holt y Holt-Winters.
+- **ipykernel:** ejecutar las celdas del notebook con Python.
+
+Si estas librerías ya están instaladas en el entorno de Python seleccionado, puedes omitir este paso.
