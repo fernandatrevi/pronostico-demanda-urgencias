@@ -256,3 +256,7 @@ Los cambios extraordinarios y las modificaciones en el registro de datos pueden 
 En desarrollo. La base de datos fue seleccionada y revisada inicialmente.
 
 Los modelos, métricas, gráficas y conclusiones se incorporarán conforme avance el análisis. Aún no se ha determinado qué modelo presenta el mejor desempeño.
+
+## Additional project documentation
+
+- [Plan de validación temporal](docs/plan-validacion.md) — verification steps, limitations, and responsible-use considerations.
